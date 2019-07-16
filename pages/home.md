@@ -41,7 +41,3 @@ graphic_list:
         text: See what’s new
         url: coming-soon
 ---
-
-<div class="usa-grid-full">
-<h3 align="center">SITE UNDER DEVELOPMENT - CONSIDER ALL CONTENT TO BE BETA QUALITY!</h3>
-</div>
