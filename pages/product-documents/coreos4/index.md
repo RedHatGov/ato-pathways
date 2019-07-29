@@ -3,7 +3,7 @@ permalink: /product-documents/coreos4/
 redirect_from:
 - /coreos4/
 layout: styleguide
-title: Red Hat Enterprise Linux CoreOS 4
+title: CoreOS 4.x
 category: Product Documents
 lead: "About this Content"
 subnav:
@@ -47,8 +47,8 @@ subnav:
 
 This microsite was developed to assist Federal customers,
 and industries regulated by Federal standards, in finding
-authoritative information regarding how Red Hat CoreOS 4.x
-meets various policies and regulations.
+authoritative information regarding how CoreOS v4.x meets various
+policies and regulations.
 
 All resources contained within this site are generated from the
 <a href="https://github.com/ComplianceAsCode/">ComplianceAsCode Project</a>

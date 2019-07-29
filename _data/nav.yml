@@ -19,6 +19,8 @@ Product Documents:
 #    href: /product-documents/rhel7/
   - text: Ansible Tower
     href: /product-documents/ansible-tower/
+  - text: CoreOS v4.x
+    href: /product-documents/coreos4/
   - text: OpenShift Container Platform 3.x
     href: /product-documents/ocp3/
   - text: OpenStack Platform 13

@@ -10,7 +10,7 @@ subnav:
   href: ['#%', control_key]
   text: control_key
 product_info:
-  name: CoreOS 4.x
+  name: CoreOs 4.x
   opencontrol_component: coreos4
   control_family_shorthand: CP
 ---
