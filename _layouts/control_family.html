@@ -118,12 +118,75 @@ layout: default
 
     {% include lead.html text=page.lead %}
 
-    <br /><br />
+    <br />
+<!-- 
+  AC-1:
+  family: {{ control_family_shorthand | upcase }}
+  name: Access Control Policy And Procedures
+  description: |-
+    The organization:
+      a.  Develops, d -->
 
-<!-- BEGIN CONTROL SUMMARY TABLE -->
+
+<!-- liquid templates do not support variables in function calls, so this hacky
+     if stanza is needed -->
+{% if control_family_shorthand == 'AC' %}
+  {% assign controls = site.data.standards.nist-800-53-rev4 | where: "family", "AC" %}
+{% elsif control_family_shorthand == 'AT' %}
+  {% assign controls = site.data.standards.nist-800-53-rev4 | where: "family", "AT" %}
+{% elsif control_family_shorthand == 'AU' %}
+  {% assign controls = site.data.standards.nist-800-53-rev4 | where: "family", "AU" %}
+{% elsif control_family_shorthand == 'CA' %}
+  {% assign controls = site.data.standards.nist-800-53-rev4 | where: "family", "CA" %}
+{% elsif control_family_shorthand == 'CM' %}
+  {% assign controls = site.data.standards.nist-800-53-rev4 | where: "family", "CM" %}
+{% elsif control_family_shorthand == 'CP' %}
+  {% assign controls = site.data.standards.nist-800-53-rev4 | where: "family", "CP" %}
+{% elsif control_family_shorthand == 'IA' %}
+  {% assign controls = site.data.standards.nist-800-53-rev4 | where: "family", "IA" %}
+{% elsif control_family_shorthand == 'IR' %}
+  {% assign controls = site.data.standards.nist-800-53-rev4 | where: "family", "IR" %}
+{% elsif control_family_shorthand == 'MA' %}
+  {% assign controls = site.data.standards.nist-800-53-rev4 | where: "family", "MA" %}
+{% elsif control_family_shorthand == 'MP' %}
+  {% assign controls = site.data.standards.nist-800-53-rev4 | where: "family", "MP" %}
+{% elsif control_family_shorthand == 'PE' %}
+  {% assign controls = site.data.standards.nist-800-53-rev4 | where: "family", "PE" %}
+{% elsif control_family_shorthand == 'PL' %}
+  {% assign controls = site.data.standards.nist-800-53-rev4 | where: "family", "PL" %}
+{% elsif control_family_shorthand == 'PS' %}
+  {% assign controls = site.data.standards.nist-800-53-rev4 | where: "family", "PS" %}
+{% elsif control_family_shorthand == 'RA' %}
+  {% assign controls = site.data.standards.nist-800-53-rev4 | where: "family", "RA" %}
+{% elsif control_family_shorthand == 'SA' %}
+  {% assign controls = site.data.standards.nist-800-53-rev4 | where: "family", "SA" %}
+{% elsif control_family_shorthand == 'SC' %}
+  {% assign controls = site.data.standards.nist-800-53-rev4 | where: "family", "SC" %}
+{% elsif control_family_shorthand == 'SI' %}
+  {% assign controls = site.data.standards.nist-800-53-rev4 | where: "family", "SI" %}
+{% endif %}
+
+<!--
+<p>
+  When accounting for Control Enhancements, the NIST 800-53 rev4 catalog includes {{ controls | size }} potential controls for this control family. Of those, {{ page.product_info.name }} has documented the following:<br />
+  <br />
+  - 54 of 123 are not applicable<br />
+  - 12 of 123 are planned<br />
+  - 82 of 123 are complete<br />
+--> 
+
+
+<!-- NEW RTM -->
 <h2>
   <center>Requirements Traceability Matrix</center>
 </h2>
+        <!-- create an array of every control, e.g.
+          AC-1{"family"=>"AC", "name"=>"Access Control Policy And Procedures", "description"=>"The organization:\n a. Develops, documents, and disseminates to [Assignment: organization-defined personnel or roles]:\n 1. An access control policy that addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and\n 2. Procedures to facilitate the implementation of the access control policy and associated access controls; and\n b. Reviews and updates the current:\n 1. Access control policy [Assignment: organization-defined frequency]; and\n 2. Access control procedures [Assignment: organization-defined frequency]."} 
+
+          control[0] = Control ID, e.g. AC-1
+          control[1].family = family
+          control[1].description = description -->
+
     <center>
       <table width="85%">
         <thead>
@@ -133,46 +196,60 @@ layout: default
             <th>Status</th>
           </tr>
         </thead>
-        {% for control_response in control_responses.satisfies %}
-          {% if control_response.control_key contains control_family_shorthand %}
+        {% for control in site.data.standards.nist-800-53-rev4 %}
+          {% if control[1].family == control_family_shorthand %}
             <tr>
-              <td><a href="#{{ control_response.control_key }}">{{ control_response.control_key }}</a></td>
-              <td>{{ site.data.standards.nist-800-53-rev4[control_response.control_key].name }}</td>
+              <td><a href="#{{ control[0] }}">{{ control[0] }}</a></td>
+              <td>{{ control[1].name }}</td>
               <td>
                 <center>
-                  {% if control_response.implementation_status == 'complete' or control_response.implementation_status == 'not applicable' %}
-                  <div class="usa-alert usa-alert-success" >
-                  {% elsif control_response.implementation_status == 'partial' %}
-                  <div class="usa-alert usa-alert-warning" >
-                  {% elsif control_response.implementation_status == 'planned' %}
-                  <div class="usa-alert usa-alert-info" > 
-                  {% else %} 
-                  <div class="usa-alert usa-alert-error" role="alert" > 
-                  {% endif %} 
-                    <div class="usa-alert-body">
-                       <p class="usa-alert-text">{{ control_response.implementation_status }}</p>
+                  {% for key_response in site.data.components[opencontrol_component].satisfies %}
+                    {% if key_response.control_key == control[0] %}
+
+                      {% if key_response.implementation_status == 'complete' or key_response.implementation_status == 'not applicable' %}
+                      <div class="usa-alert usa-alert-success" >
+                      {% elsif key_response.implementation_status == 'partial' %}
+                      <div class="usa-alert usa-alert-warning" >
+                      {% elsif key_response.implementation_status == 'planned' %}
+                      <div class="usa-alert usa-alert-info" > 
+                      {% else %} 
+                      <div class="usa-alert usa-alert-error" role="alert" > 
+                      {% endif %} 
+                        <div class="usa-alert-body">
+                           <p class="usa-alert-text">{{ key_response.implementation_status }}</p>
+                        </div>
+                      </div>
+                      {% assign match = true %}
+                      {% break %}
+                    {% endif %}
+                  {% endfor %}
+                  {% if match != true %}
+                    <div class="usa-alert usa-alert-error" role="alert" >
+                      <div class="usa-alert-body">
+                       <p class="usa-alert-text">unknown</p>
+                      </div>
                     </div>
-                  </div>
+                  {% endif %}
                 </center>
               </td>
             </tr>
           {% endif %}
+          {% assign match = false %}
         {% endfor %}
       </table>
     </center>
-<!-- BEGIN CONTROL SUMMARY TABLE -->
+<!-- END NEW RTM -->
 
-<!-- BEGIN CONTROL RESPONSE TABLE -->
-    {% for control_response in site.data.components[opencontrol_component].satisfies %}
-      {% if control_response.control_key contains control_family_shorthand %}
-      <div class="usa-grid" id="{{ control_response.control_key }}">
-        <br /><hr class="homepage-rule center-diamond" /><br />
-      </div>
-
-      <div class="alignment-example" align="center">
-        <h2>{{ control_response.control_key }}: {{ site.data.standards.nist-800-53-rev4[control_response.control_key].name }}</h2>
-        <h4>{{ site.data.standards.nist-800-53-rev4[control_response.control_key].description | markdownify }}</h4>
-      </div>
+<!-- BEGIN NEW CONTROL RESPONSE TABLES -->
+    {% for control in site.data.standards.nist-800-53-rev4 %}
+      {% if control[1].family == control_family_shorthand %}
+        <div class="usa-grid" id="{{ control[0] }}">
+          <br /><hr class="homepage-rule center-diamond" /><br />
+        </div>
+        <div class="alignment-example" align="center">
+          <h2>{{ control[0] }}: {{ control[1].name }}</h2>
+          <h4>{{ control[1].description | markdownify }}</h4>
+        </div>
 
     <center>
     <table width="85%">
@@ -181,7 +258,7 @@ layout: default
           <th scope="row">
             <strong>
               <center>
-                {{ control_response.control_key }} Control Response Information
+                {{ control[0] }} Control Response Information
               </center>
             </strong>
           </th>
@@ -190,93 +267,86 @@ layout: default
       <tr>
         <td>
           <b>Implementation Status: </b> 
-          {% if control_response.implementation_status == 'complete' or control_response.implementation_status == 'not applicable' %}
-          <div class="usa-alert usa-alert-success" >
-          {% elsif control_response.implementation_status == 'partial' %}
-          <div class="usa-alert usa-alert-warning" >
-          {% elsif control_response.implementation_status == 'planned' %}
-          <div class="usa-alert usa-alert-info" > 
-          {% else %} 
-          <div class="usa-alert usa-alert-error" role="alert" > 
-          {% endif %} 
-            <div class="usa-alert-body">
-              <p class="usa-alert-text">{{ control_response.implementation_status }}</p>
+
+          <!-- For every response in the OpenControl data... -->
+          {% for key_response in site.data.components[opencontrol_component].satisfies %}
+            
+            <!-- Evaluate if the array element matches the NIST 800-53 key
+                 currently being documented -->
+            {% if key_response.control_key == control[0] %}
+              <!-- And if it does... -->
+
+              <!-- setup the appropriate div class -->
+              {% if key_response.implementation_status == 'complete' or key_response.implementation_status == 'not applicable' %}
+                <div class="usa-alert usa-alert-success" >
+              {% elsif key_response.implementation_status == 'partial' %}
+                <div class="usa-alert usa-alert-warning" >
+              {% elsif key_response.implementation_status == 'planned' %}
+                <div class="usa-alert usa-alert-info" > 
+              {% else %} 
+                <!-- if not complete, not applicable, partial, or planned, throw an 'alert' class -->
+                <div class="usa-alert usa-alert-error" role="alert" > 
+              {% endif %} 
+
+                  <!-- Populate the content of the implementation_status class -->
+                  <div class="usa-alert-body">
+                    <p class="usa-alert-text">{{ key_response.implementation_status }}</p>
+                  </div>
+                </div>
+
+              <!-- Indicate there was a match between the OpenControl content and NIST 800-53 control -->
+              {% assign match = true %}
+
+              <!-- Break out of the loop. Technically not needed, but makes builds faster -->
+              {% break %}
+
+            {% endif %}
+
+            <!-- Reset the match variable now that we're out of the for-loop -->
+            {% assign match = false %}
+          {% endfor %}
+
+          <!-- If there wasn't a match, insert "unknown" into the alert div class -->
+          {% if match != true %}
+            <div class="usa-alert usa-alert-error" role="alert" >
+              <div class="usa-alert-body">
+               <p class="usa-alert-text">unknown</p>
+              </div>
             </div>
-          </div>
+          {% endif %}
+
         </td>
       </tr>
-      <!--<tr>
-        <td>Control Origination:
-          <ul>
-            <li>Provided By Customer (Customer System Specific)</li>
-            <li>Shared (Service Provider and Customer Responsibility)</li>
-          </ul>
-          There should be a checklist here:
-          <fieldset>
-      
-        <div>
-            <input type="checkbox" id="Service_Provider_Corporate" name="origination"
-                   value="Service_Provider_Corporate" checked />
-            <label for="Service_Provider_Corporate">Service Provider Corporate</label>
-        </div>
-
-        <div>
-            <input type="checkbox" id="Service_Provider_System_Specific" name="origination"
-                   value="Service_Provider_System_Specific" />
-            <label for="Service_Provider_System_Specific">Service Provider System Specific</label>
-        </div>
-
-        <div>
-            <input type="checkbox" id="Service_Provider_Hybrid" name="origination"
-                   value="Service_Provider_Hybrid" />
-            <label for="Service_Provider_Hybrid">Service Provider Hybrid (Corporate and System Specific)</label>
-        </div>
-
-        <div>
-            <input type="checkbox" id="Configured_By_Customer" name="origination"
-                   value="Configured_By_Customer" />
-            <label for="Configured_By_Customer">Configured By Customer (Customer System Specific)</label>
-        </div>
-
-        <div>
-            <input type="checkbox" id="Service_Provider_Hybrid" name="origination"
-                   value="Service_Provider_Hybrid" />
-            <label for="Service_Provider_Hybrid">Service Provider Hybrid (Corporate and System Specific)</label>
-        </div>
-
-        <div>
-            <input type="checkbox" id="Service_Provider_Hybrid" name="origination"
-                   value="Service_Provider_Hybrid" />
-            <label for="Service_Provider_Hybrid">Service Provider Hybrid (Corporate and System Specific)</label>
-        </div>
-
-        <div>
-            <input type="checkbox" id="Service_Provider_Hybrid" name="origination"
-                   value="Service_Provider_Hybrid" />
-            <label for="Service_Provider_Hybrid">Service Provider Hybrid (Corporate and System Specific)</label>
-        </div>
-
-    </fieldset>
-        </td>
-      </tr> -->
     </table>
 
     <table width="85%">
       <thead>
         <tr>
-          <th>{{ control_response.control_key }}: What is the solution and how is it implemented?</th>
+          <th>{{ control[0] }}: What is the solution and how is it implemented?</th>
         </tr>
       </thead>
-      {% for key in control_response.narrative %}
-      <tr>
-        <td>
-          {% if key.key != null %}
-          <b>{{ control_response.control_key }}({{ key.key }}):</b>
-          {% endif %}
-          {{ key.text | markdownify  | replace: '\n', '<br />' | replace: "'", '<p>' | replace: "'", '</p>' }}
-        </td>
-      </tr>
+      {% for key_response in site.data.components[opencontrol_component].satisfies %}
+        {% if key_response.control_key == control[0] %}
+          {% for key in key_response.narrative %}
+            <tr>
+              <td>
+                {% if key.key != null %}
+                <b>{{ control[0] }}({{ key.key }}):</b>
+                {% endif %}
+                {{ key.text | markdownify  | replace: '\n', '<br />' | replace: "'", '<p>' | replace: "'", '</p>' }}
+              </td>
+            </tr>
+          {% endfor %}
+          {% assign match = true %}
+          {% break %}
+        {% endif %}
+        {% assign match = false %}
       {% endfor %}
+      {% if match != true %}
+        <tr>
+          <td>This control has not been evaluated in the context of {{ page.product_info.name }}.</td>
+        </tr>
+      {% endif %}
     </table>
   </center>
     {% endif %}
