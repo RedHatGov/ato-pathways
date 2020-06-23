@@ -1,3 +1,9 @@
+# Decomissioned
+
+This repository hold previous decommissioned code for [ATO Pathways site](https://atopathways.redhatgov.io/). This code has been replaced in 2019 by code of [ocdb](https://github.com/RedHatGov/ocdb).
+
+----
+
 # U.S. Web Design System documentation
 
 This repo includes code and documentation for the  U.S. Web Design System website. For information on the Design System (components) themselves, please visit [web-design-standards](https://github.com/uswds/uswds).
